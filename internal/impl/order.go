@@ -31,9 +31,9 @@ func (s *Server) Read(ctx context.Context, in *order.ReadOrderReq) (*order.ReadO
 
 	log.Printf("[Order] Read Req: %v", in.GetId())
 
-	p1 := getProduct(in.GetId())
-	p2 := getProduct(in.GetId())
-	p3 := getProduct(in.GetId())
+	p1 := getProduct(strconv.Itoa(randomdata.Number(1000000)))
+	p2 := getProduct(strconv.Itoa(randomdata.Number(1000000)))
+	p3 := getProduct(strconv.Itoa(randomdata.Number(1000000)))
 
 	var products = []*product.Product{p1, p2, p3}
 
