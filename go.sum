@@ -13,6 +13,8 @@ github.com/drhelius/grpc-demo-proto v0.0.0-20200413225532-717144dd7f50 h1:lopzeR
 github.com/drhelius/grpc-demo-proto v0.0.0-20200413225532-717144dd7f50/go.mod h1:5Ud47vzZJGcU/VuP98ET28vtvHKSCbqiSCJ+DueelpM=
 github.com/drhelius/grpc-demo-proto v0.0.0-20200413230431-95f2637b1f95 h1:kGYyVkx1ellhzfuQHDM//1rTy+eMdSjYboKaQqf18zA=
 github.com/drhelius/grpc-demo-proto v0.0.0-20200413230431-95f2637b1f95/go.mod h1:5Ud47vzZJGcU/VuP98ET28vtvHKSCbqiSCJ+DueelpM=
+github.com/drhelius/grpc-demo-proto v1.0.1 h1:M3UvlwNxylZ4tJWcBSv7YgyMI9xXxtbbSSh1kE/yaaU=
+github.com/drhelius/grpc-demo-proto v1.0.1/go.mod h1:5Ud47vzZJGcU/VuP98ET28vtvHKSCbqiSCJ+DueelpM=
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.1-0.20191026205805-5f8ba28d4473/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.4/go.mod h1:6rpuAdCZL397s3pYoYcLgu1mIlRU8Am5FuJP05cCM98=
