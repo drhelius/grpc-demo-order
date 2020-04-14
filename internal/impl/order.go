@@ -48,7 +48,7 @@ func getProduct(id string) *product.Product {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	log.Printf("[Order] Inoking Product service: %s", id)
+	log.Printf("[Order] Invoking Product service: %s", id)
 
 	p, err := clients.ProductService.Read(ctx, &product.ReadProductReq{Id: id})
 
