@@ -3,8 +3,10 @@ package impl
 import (
 	"context"
 	"log"
+	"strconv"
 	"time"
 
+	"github.com/Pallinder/go-randomdata"
 	"github.com/drhelius/grpc-demo-order/internal/clients"
 	"github.com/drhelius/grpc-demo-proto/order"
 	"github.com/drhelius/grpc-demo-proto/product"
@@ -16,41 +18,39 @@ type Server struct {
 
 func (s *Server) Create(ctx context.Context, in *order.CreateOrderReq) (*order.CreateOrderResp, error) {
 
-	log.Printf("[Order] Received: %s", in.GetOrder())
+	log.Printf("[Order] Create Req: %v", in.GetOrder())
 
-	return &order.CreateOrderResp{Id: "testid"}, nil
+	r := &order.CreateOrderResp{Id: strconv.Itoa(randomdata.Number(1000000))}
+
+	log.Printf("[Order] Create Res: %v", r.GetId())
+
+	return r, nil
 }
 
 func (s *Server) Read(ctx context.Context, in *order.ReadOrderReq) (*order.ReadOrderResp, error) {
 
-	log.Printf("[Order] Received: %v", in.GetId())
+	log.Printf("[Order] Read Req: %v", in.GetId())
 
-	p := getProduct(in.GetId())
+	p1 := getProduct(in.GetId())
+	p2 := getProduct(in.GetId())
+	p3 := getProduct(in.GetId())
 
-	var products = []*product.Product{
-		{
-			Id:          "001",
-			Name:        "one",
-			Description: "desc one",
-			Price:       100,
-		},
-		{
-			Id:          "002",
-			Name:        "two",
-			Description: "desc two",
-			Price:       200,
-		},
-		p,
-	}
+	var products = []*product.Product{p1, p2, p3}
 
-	return &order.ReadOrderResp{Order: &order.Order{Id: "demoid", Name: "demoname", Date: 4000000, Products: products}}, nil
+	r := &order.ReadOrderResp{Order: &order.Order{Id: in.GetId(), Name: randomdata.SillyName(), Date: int64(randomdata.Number(1000000)), Products: products}}
+
+	log.Printf("[Order] Read Res: %v", r.GetOrder())
+
+	return r, nil
 }
 
 func getProduct(id string) *product.Product {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	p, err := clients.ProductService.Read(ctx, &product.ReadProductReq{Id: "000"})
+	log.Printf("[Order] Inoking Product service: %s", id)
+
+	p, err := clients.ProductService.Read(ctx, &product.ReadProductReq{Id: id})
 
 	if err != nil {
 		log.Fatalf("[Order] Could not invoke Product service: %v", err)
