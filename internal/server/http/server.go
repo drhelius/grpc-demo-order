@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"sync"
 
-	gw "github.com/drhelius/grpc-demo-proto/order"
+	"github.com/drhelius/grpc-demo-proto/order"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc"
 )
@@ -21,7 +21,7 @@ func Serve(wg *sync.WaitGroup, grpc_port string, http_port string) {
 
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
-	err := gw.RegisterOrderServiceHandlerFromEndpoint(ctx, mux, fmt.Sprintf(":%s", grpc_port), opts)
+	err := order.RegisterOrderServiceHandlerFromEndpoint(ctx, mux, fmt.Sprintf(":%s", grpc_port), opts)
 	if err != nil {
 		return
 	}
