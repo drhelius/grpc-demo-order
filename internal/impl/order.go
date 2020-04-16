@@ -34,8 +34,10 @@ func (s *Server) Read(ctx context.Context, in *order.ReadOrderReq) (*order.ReadO
 	p1 := getProduct(strconv.Itoa(randomdata.Number(1000000)))
 	p2 := getProduct(strconv.Itoa(randomdata.Number(1000000)))
 	p3 := getProduct(strconv.Itoa(randomdata.Number(1000000)))
+	p4 := getProduct(strconv.Itoa(randomdata.Number(1000000)))
+	p5 := getProduct(strconv.Itoa(randomdata.Number(1000000)))
 
-	var products = []*product.Product{p1, p2, p3}
+	var products = []*product.Product{p1, p2, p3, p4, p5}
 
 	r := &order.ReadOrderResp{Order: &order.Order{Id: in.GetId(), Name: randomdata.SillyName(), Date: int64(randomdata.Number(1000000)), Products: products}}
 
