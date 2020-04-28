@@ -15,7 +15,7 @@ func getIp() string {
 
 	log.Printf("[Order] Invoking httpbin IP service")
 
-	response, err := http.Get("https://httpbin.org/ip")
+	response, err := http.Get("https://httpbin/ip")
 
 	var public_ip string
 
