@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"strconv"
 )
 
 type publicIp struct {
@@ -16,13 +18,35 @@ func getIp() string {
 
 	log.Printf("[Order] Invoking httpbin IP service")
 
+	https_insecure, err := strconv.ParseBool(os.Getenv("HTTPBIN_INSECURE"))
+
+	if err != nil {
+		https_insecure = false
+	}
+
 	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: https_insecure},
 	}
 
 	client := &http.Client{Transport: tr}
 
-	response, err := client.Get("https://httpbin/ip")
+	httpbin_protocol := os.Getenv("HTTPBIN_PROTOCOL")
+	httpbin_host := os.Getenv("HTTPBIN_HOST")
+	httpbin_port := os.Getenv("HTTPBIN_PORT")
+
+	if httpbin_protocol == "" {
+		httpbin_protocol = "https"
+	}
+
+	if httpbin_host == "" {
+		httpbin_host = "httpbin.org"
+	}
+
+	if httpbin_port == "" {
+		httpbin_port = "443"
+	}
+
+	response, err := client.Get(httpbin_protocol + "://" + httpbin_host + ":" + httpbin_port + "/ip")
 
 	var public_ip string
 
