@@ -37,7 +37,7 @@ func getIp() string {
 
 		public_ip = response.Origin
 
-		log.Printf("[Order] httpbin IP service: %s", string(data))
+		log.Printf("[Order] httpbin IP service: %s", public_ip)
 	}
 
 	return public_ip
