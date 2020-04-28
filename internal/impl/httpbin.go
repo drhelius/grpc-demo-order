@@ -1,6 +1,7 @@
 package impl
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"io/ioutil"
 	"log"
@@ -15,7 +16,13 @@ func getIp() string {
 
 	log.Printf("[Order] Invoking httpbin IP service")
 
-	response, err := http.Get("https://httpbin/ip")
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
+	client := &http.Client{Transport: tr}
+
+	response, err := client.Get("https://httpbin/ip")
 
 	var public_ip string
 
