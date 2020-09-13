@@ -10,9 +10,11 @@ import (
 var ProductService product.ProductServiceClient
 
 func init() {
-	conn, err := grpc.Dial("product:5000", grpc.WithInsecure(), grpc.WithBlock())
+	log.Printf("[Order] Dialing to 'product:5000' ...")
+
+	conn, err := grpc.Dial("product:5000", grpc.WithInsecure(), grpc.WithBlock(), grpc.FailOnNonTempDialError(true))
 	if err != nil {
-		log.Fatalf("[Order] Product client did not connect: %v", err)
+		log.Fatalf("[Order] Error dialing to Product service: %v", err)
 	}
 
 	ProductService = product.NewProductServiceClient(conn)

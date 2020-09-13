@@ -37,11 +37,11 @@ func (s *Server) Read(ctx context.Context, in *order.ReadOrderReq) (*order.ReadO
 	p4 := getProduct(strconv.Itoa(randomdata.Number(1000000)))
 	p5 := getProduct(strconv.Itoa(randomdata.Number(1000000)))
 
-	public_ip := getIp()
+	publicIP := clients.GetPublicIP()
 
 	var products = []*product.Product{p1, p2, p3, p4, p5}
 
-	r := &order.ReadOrderResp{Order: &order.Order{Id: in.GetId(), Name: randomdata.SillyName(), Date: int64(randomdata.Number(1000000)), Products: products, Ip: public_ip}}
+	r := &order.ReadOrderResp{Order: &order.Order{Id: in.GetId(), Name: randomdata.SillyName(), Date: int64(randomdata.Number(1000000)), Products: products, Ip: publicIP}}
 
 	log.Printf("[Order] Read Res: %v", r.GetOrder())
 
@@ -57,10 +57,10 @@ func getProduct(id string) *product.Product {
 	p, err := clients.ProductService.Read(ctx, &product.ReadProductReq{Id: id})
 
 	if err != nil {
-		log.Fatalf("[Order] Could not invoke Product service: %v", err)
+		log.Printf("[Order] ERROR - Could not invoke Product service: %v", err)
+		return &product.Product{}
 	}
 
 	log.Printf("[Order] Product service invocation: %v", p.GetProduct())
-
 	return p.GetProduct()
 }
