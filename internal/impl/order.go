@@ -10,6 +10,7 @@ import (
 	"github.com/drhelius/grpc-demo-order/internal/clients"
 	"github.com/drhelius/grpc-demo-proto/order"
 	"github.com/drhelius/grpc-demo-proto/product"
+	"google.golang.org/grpc/metadata"
 )
 
 type Server struct {
@@ -49,12 +50,17 @@ func (s *Server) Read(ctx context.Context, in *order.ReadOrderReq) (*order.ReadO
 }
 
 func getProduct(ctx context.Context, id string) *product.Product {
+
+	headersIn, _ := metadata.FromIncomingContext(ctx)
+
 	ctxTimeout, cancel := context.WithTimeout(ctx, time.Second)
 	defer cancel()
 
+	ctx = metadata.NewOutgoingContext(ctxTimeout, headersIn)
+
 	log.Printf("[Order] Invoking Product service: %s", id)
 
-	p, err := clients.ProductService.Read(ctxTimeout, &product.ReadProductReq{Id: id})
+	p, err := clients.ProductService.Read(ctx, &product.ReadProductReq{Id: id})
 
 	if err != nil {
 		log.Printf("[Order] ERROR - Could not invoke Product service: %v", err)
