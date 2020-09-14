@@ -31,11 +31,11 @@ func (s *Server) Read(ctx context.Context, in *order.ReadOrderReq) (*order.ReadO
 
 	log.Printf("[Order] Read Req: %v", in.GetId())
 
-	p1 := getProduct(strconv.Itoa(randomdata.Number(1000000)))
-	p2 := getProduct(strconv.Itoa(randomdata.Number(1000000)))
-	p3 := getProduct(strconv.Itoa(randomdata.Number(1000000)))
-	p4 := getProduct(strconv.Itoa(randomdata.Number(1000000)))
-	p5 := getProduct(strconv.Itoa(randomdata.Number(1000000)))
+	p1 := getProduct(ctx, strconv.Itoa(randomdata.Number(1000000)))
+	p2 := getProduct(ctx, strconv.Itoa(randomdata.Number(1000000)))
+	p3 := getProduct(ctx, strconv.Itoa(randomdata.Number(1000000)))
+	p4 := getProduct(ctx, strconv.Itoa(randomdata.Number(1000000)))
+	p5 := getProduct(ctx, strconv.Itoa(randomdata.Number(1000000)))
 
 	publicIP := clients.GetPublicIP()
 
@@ -48,13 +48,13 @@ func (s *Server) Read(ctx context.Context, in *order.ReadOrderReq) (*order.ReadO
 	return r, nil
 }
 
-func getProduct(id string) *product.Product {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+func getProduct(ctx context.Context, id string) *product.Product {
+	ctxTimeout, cancel := context.WithTimeout(ctx, time.Second)
 	defer cancel()
 
 	log.Printf("[Order] Invoking Product service: %s", id)
 
-	p, err := clients.ProductService.Read(ctx, &product.ReadProductReq{Id: id})
+	p, err := clients.ProductService.Read(ctxTimeout, &product.ReadProductReq{Id: id})
 
 	if err != nil {
 		log.Printf("[Order] ERROR - Could not invoke Product service: %v", err)
