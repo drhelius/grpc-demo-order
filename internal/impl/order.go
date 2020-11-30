@@ -10,7 +10,9 @@ import (
 	"github.com/drhelius/grpc-demo-order/internal/clients"
 	"github.com/drhelius/grpc-demo-proto/order"
 	"github.com/drhelius/grpc-demo-proto/product"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 )
 
 type Server struct {
@@ -23,6 +25,11 @@ func (s *Server) Create(ctx context.Context, in *order.CreateOrderReq) (*order.C
 
 	r := &order.CreateOrderResp{Id: strconv.Itoa(randomdata.Number(1000000))}
 
+	err := failedContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	log.Printf("[Order] Create Res: %v", r.GetId())
 
 	return r, nil
@@ -32,13 +39,52 @@ func (s *Server) Read(ctx context.Context, in *order.ReadOrderReq) (*order.ReadO
 
 	log.Printf("[Order] Read Req: %v", in.GetId())
 
+	err := failedContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	p1 := getProduct(ctx, strconv.Itoa(randomdata.Number(1000000)))
+
+	err = failedContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	p2 := getProduct(ctx, strconv.Itoa(randomdata.Number(1000000)))
+
+	err = failedContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	p3 := getProduct(ctx, strconv.Itoa(randomdata.Number(1000000)))
+
+	err = failedContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	p4 := getProduct(ctx, strconv.Itoa(randomdata.Number(1000000)))
+
+	err = failedContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	p5 := getProduct(ctx, strconv.Itoa(randomdata.Number(1000000)))
 
+	err = failedContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	publicIP := clients.GetPublicIP()
+
+	err = failedContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 
 	var products = []*product.Product{p1, p2, p3, p4, p5}
 
@@ -69,4 +115,18 @@ func getProduct(ctx context.Context, id string) *product.Product {
 
 	log.Printf("[Order] Product service invocation: %v", p.GetProduct())
 	return p.GetProduct()
+}
+
+func failedContext(ctx context.Context) error {
+	if ctx.Err() == context.Canceled {
+		log.Printf("[Order] context canceled, stoping server side operation")
+		return status.Error(codes.Canceled, "context canceled, stoping server side operation")
+	}
+
+	if ctx.Err() == context.DeadlineExceeded {
+		log.Printf("[Order] dealine has exceeded, stoping server side operation")
+		return status.Error(codes.DeadlineExceeded, "dealine has exceeded, stoping server side operation")
+	}
+
+	return nil
 }
