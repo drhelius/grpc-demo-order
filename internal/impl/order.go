@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"strconv"
-	"time"
 
 	"github.com/Pallinder/go-randomdata"
 	"github.com/drhelius/grpc-demo-order/internal/clients"
@@ -99,10 +98,10 @@ func getProduct(ctx context.Context, id string) *product.Product {
 
 	headersIn, _ := metadata.FromIncomingContext(ctx)
 
-	ctxTimeout, cancel := context.WithTimeout(ctx, time.Second)
-	defer cancel()
+	//ctxTimeout, cancel := context.WithTimeout(ctx, time.Second)
+	//defer cancel()
 
-	ctx = metadata.NewOutgoingContext(ctxTimeout, headersIn)
+	ctx = metadata.NewOutgoingContext(ctx, headersIn)
 
 	log.Printf("[Order] Invoking Product service: %s", id)
 
