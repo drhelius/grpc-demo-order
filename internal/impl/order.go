@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"strconv"
+	"time"
 
 	"github.com/Pallinder/go-randomdata"
 	"github.com/drhelius/grpc-demo-order/internal/clients"
@@ -38,56 +39,20 @@ func (s *Server) Read(ctx context.Context, in *order.ReadOrderReq) (*order.ReadO
 
 	log.Printf("[Order] Read Req: %v", in.GetId())
 
-	err := failedContext(ctx)
-	if err != nil {
-		return nil, err
-	}
+	var products [5]*product.Product
 
-	p1 := getProduct(ctx, strconv.Itoa(randomdata.Number(1000000)))
+	for i := 0; i < 5; i++ {
+		err := failedContext(ctx)
+		if err != nil {
+			return nil, err
+		}
 
-	err = failedContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	p2 := getProduct(ctx, strconv.Itoa(randomdata.Number(1000000)))
-
-	err = failedContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	p3 := getProduct(ctx, strconv.Itoa(randomdata.Number(1000000)))
-
-	err = failedContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	p4 := getProduct(ctx, strconv.Itoa(randomdata.Number(1000000)))
-
-	err = failedContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	p5 := getProduct(ctx, strconv.Itoa(randomdata.Number(1000000)))
-
-	err = failedContext(ctx)
-	if err != nil {
-		return nil, err
+		products[i] = getProduct(ctx, strconv.Itoa(randomdata.Number(1000000)))
 	}
 
 	publicIP := clients.GetPublicIP()
 
-	err = failedContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	var products = []*product.Product{p1, p2, p3, p4, p5}
-
-	r := &order.ReadOrderResp{Order: &order.Order{Id: in.GetId(), Name: randomdata.SillyName(), Date: int64(randomdata.Number(1000000)), Products: products, Ip: publicIP}}
+	r := &order.ReadOrderResp{Order: &order.Order{Id: in.GetId(), Name: randomdata.SillyName(), Date: int64(randomdata.Number(1000000)), Products: products[:], Ip: publicIP}}
 
 	log.Printf("[Order] Read Res: %v", r.GetOrder())
 
@@ -98,10 +63,10 @@ func getProduct(ctx context.Context, id string) *product.Product {
 
 	headersIn, _ := metadata.FromIncomingContext(ctx)
 
-	//ctxTimeout, cancel := context.WithTimeout(ctx, time.Second)
-	//defer cancel()
+	ctxTimeout, cancel := context.WithTimeout(ctx, time.Second)
+	defer cancel()
 
-	ctx = metadata.NewOutgoingContext(ctx, headersIn)
+	ctx = metadata.NewOutgoingContext(ctxTimeout, headersIn)
 
 	log.Printf("[Order] Invoking Product service: %s", id)
 
